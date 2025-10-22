@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Catalog</title>
+</head>
+<body>
+    <h1>Book Catalog from XML</h1>
+    <div id="bookList"></div>
+
+    <script>
+        fetch('book.xml')
+            .then(response => response.text())  // 获取 XML 作为文本
+            .then(xmlText => {
+                const parser = new DOMParser();  // 创建解析器
+                const xmlDoc = parser.parseFromString(xmlText, 'text/xml');  // 解析为 DOM 对象
+                
+                const books = xmlDoc.getElementsByTagName('book');  // 获取所有 book 元素
+                const bookList = document.getElementById('bookList');  // 获取显示容器
+                
+                for (let i = 0; i < books.length; i++) {  // 循环每个 book
+                    const title = books[i].getElementsByTagName('title')[0].textContent;
+                    const author = books[i].getElementsByTagName('author')[0].textContent;
+                    const price = books[i].getElementsByTagName('price')[0].textContent;
+                    
+                    const bookDiv = document.createElement('div');  // 创建 div
+                    bookDiv.innerHTML = `<h2>${title}</h2><p>作者: ${author}</p><p>价格: $${price}</p><hr>`;
+                    bookList.appendChild(bookDiv);  // 添加到页面
+                }
+            })
+            .catch(error => console.error('获取 XML 错误:', error));  // 错误处理
+    </script>
+</body>
+</html>
